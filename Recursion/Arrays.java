@@ -158,7 +158,7 @@ public final class Arrays {
       return -1; // Error code.
    }
    
-   // Internal recursive implementation for maxRec4: processing input array only inbetween indexFirst and indexLast.
+   // Internal recursive implementation for binarySearch: processing input array only inbetween indexFirst and indexLast.
    // Note: "partition" represents the part of the input array between indexFirst (inclusive) and indexLast (inclusive).
    private static int binarySearchPartB( int A[], int indexFirst, int indexLast, int value ) {
       // Check if input "partition" is valid.
