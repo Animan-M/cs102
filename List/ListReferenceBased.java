@@ -4,7 +4,7 @@
 // CS-102: "Computing and Algorithms II"
 // Prof. Giuseppe Turini
 // Kettering University
-// 2020-10-20
+// 2020-10-21
 
 package List;
 
@@ -63,7 +63,7 @@ public class ListReferenceBased implements ListInterface {
          if( index == 0 ) {
             // Insertion at front: create a new node, link it to former 1st node, and update head reference.
             Node newNode = new Node( item, this.head );
-            head = newNode;
+            this.head = newNode;
          }
          else {
             // Insertion in the middle or at the end: find node before insertion point, and perform insertion.
@@ -96,7 +96,6 @@ public class ListReferenceBased implements ListInterface {
       }
    }
 
-   // Deletes an item from the list at a given position.
    // Desc.: Deletes the list item at the input position from this list.
    // Input: An input index (array-like).
    // Output: Throws a ListIndexOutOfBoundsException (non-critical) if this removal fails because input index is invalid.
@@ -120,6 +119,49 @@ public class ListReferenceBased implements ListInterface {
       else {
          // Input index is invalid, removal is impossible, raise the proper runtime error.
          throw new ListIndexOutOfBoundsException("Remove operation failed, input index out of range!");
+      }
+   }
+   
+   // Desc.: Removes duplicates items (items with same reference) from the list, but keeping the 1st item occurrence in the list.
+   // Note: In-place implementation.
+   public void removeDuplicates() {
+      // Check if the list is long enough to have duplicate items.
+      if( this.numItems > 1 ) {
+         // List is long enough to have duplicate items, search and remove all of them.
+         // Iterate through all list items from 1st node to node before last.
+         Node currNode = this.head; // Set current node to 1st list node.
+         while( currNode.next != null ) {
+            // Scan rest of list (from currNode forward).
+            Node currDuplicate = currNode.next; // Set current duplicate to node right after current node.
+            Node prevDuplicate = currNode; // Set previous duplicate to node right before current duplicate.
+            while( currDuplicate != null ) {
+               // Check if currDuplicate stores an item that is a duplicate (reference) of item stored in currNode.
+               if( currNode.item.equals( currDuplicate.item ) ) {
+                  // Duplicate found, delete node pointed by currDuplicate (modify prevDuplicate so that it bypasses currDuplicate).
+                  prevDuplicate.next = currDuplicate.next; // Bypassing currDuplicate.
+                  this.numItems--;
+                  // Update previous duplicate and current duplicate, switching both of them to next list node.
+                  // WARNING: do not update/change prevDuplicate!.
+                  currDuplicate = currDuplicate.next;
+               }
+               else {
+                  // Duplicate not found, do nothing.
+                  // Update previous duplicate and current duplicate, switching both of them to next list node.
+                  prevDuplicate = currDuplicate;
+                  currDuplicate = currDuplicate.next;
+               }
+            }
+            // Update current node switching it to next list node.
+            currNode = currNode.next;
+            // Special case: last removal has made currNode the last node, quit immediately to avoid executing loop header.
+            if( currNode == null ) {
+               return;
+            }
+         }
+      }
+      else {
+         // List is not long enough to have duplicate items, do nothing and return.
+         return;
       }
    }
 
