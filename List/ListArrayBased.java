@@ -4,7 +4,7 @@
 // CS-102: "Computing and Algorithms II"
 // Prof. Giuseppe Turini
 // Kettering University
-// 2020-10-20
+// 2020-10-22
 
 package List;
 
@@ -82,7 +82,6 @@ public class ListArrayBased implements ListInterface {
       }
    }
    
-   // Deletes an item from the list at a given position.
    // Desc.: Deletes the list item at the input position from this list.
    // Input: An input index (array-like).
    // Output: Throws a ListIndexOutOfBoundsException (non-critical) if this removal fails because input index is invalid.
