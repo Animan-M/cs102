@@ -13,9 +13,9 @@ public final class Math {
 
    public static int debugCounter; // Counter to perform a simple performance analysis.
    
-   // Power function: returns the 1st argument raised to the power of the 2nd argument (a^b)
-   // Note: assume b >= 0.
-   // Iterative implementation (version 1)
+   // Desc.: Computes a^b (a at the power of b).
+   // Input: The base a and the exponent b (assuming b >= 0).
+   // Note: Iterative implementation (version 1).
    public static int powIter1( int a, int b ) {
       // Check special cases.
       if( b == 0 ) { return 1; }
@@ -32,9 +32,9 @@ public final class Math {
       }
    }
    
-   // Power function: returns the 1st argument raised to the power of the 2nd argument (a^b)
-   // Note: assume b >= 0.
-   // Iterative implementation (version 2)
+   // Desc.: Computes a^b (a at the power of b).
+   // Input: The base a and the exponent b (assuming b >= 0).
+   // Note: Iterative implementation (version 2).
    public static int powIter2( int a, int b ) {
       // Check special cases.
       if( b == 0 ) { return 1; }
@@ -51,9 +51,9 @@ public final class Math {
       }
    }
    
-   // Power function: returns the 1st argument raised to the power of the 2nd argument (a^b)
-   // Note: assume b >= 0.
-   // Recursive implementation (version 1)
+   // Desc.: Computes a^b (a at the power of b).
+   // Input: The base a and the exponent b (assuming b >= 0).
+   // Note: Recursive implementation (version 1).
    public static int powRec1( int a, int b) {
       // Check special cases.
       if( b == 0 ) { return 1; } // Base case.
@@ -65,9 +65,9 @@ public final class Math {
       }
    }
    
-   // Power function: returns the 1st argument raised to the power of the 2nd argument (a^b)
-   // Note: assume b >= 0.
-   // Recursive implementation (version 2)
+   // Desc.: Computes a^b (a at the power of b).
+   // Input: The base a and the exponent b (assuming b >= 0).
+   // Note: Recursive implementation (version 2).
    public static int powRec2( int a, int b) {
       // Check special cases.
       if( b == 0 ) { return 1; } // Base case.
@@ -89,9 +89,9 @@ public final class Math {
       }
    }
    
-   // Power function: returns the 1st argument raised to the power of the 2nd argument (a^b)
-   // Note: assume b >= 0.
-   // Recursive implementation (version 3)
+   // Desc.: Computes a^b (a at the power of b).
+   // Input: The base a and the exponent b (assuming b >= 0).
+   // Note: Recursive implementation (version 3).
    public static int powRec3( int a, int b) {
       // Check special cases.
       if( b == 0 ) { return 1; } // Base case.
@@ -115,6 +115,75 @@ public final class Math {
       }
    }
    
+   // Desc.: Computes the sum of powers of 2, considering the first n+1 powers of 2, from 2^0 to 2^n.
+   // Input: "n" (assuming n >= 0) as the value of the last exponent used in the sum, or as the exponent of the last term in the sum.
+   // Node: If input value is negative (n < 0), this function returns a special value (-1).
+   // Note: See https://en.wikipedia.org/wiki/1_%2B_2_%2B_4_%2B_8_%2B_%E2%8B%AF
+   // Note: Iterative implementation (version 1).
+   public static int sumPowersOfTwoIter1( int n ) {
+      // Check if input value is valid (n >= 0 ).
+      if( n < 0 ) {
+         // Input value is invalid, return special value -1.
+         return -1;
+      }
+      // Input value is valid, check if the sum is trivial (only 1 term).
+      else if( n == 0 ) { 
+         // Sum includes only 1 term, result is 2^0.
+         return 1;
+      }
+      else {
+         // Here the sum includes at least 2 terms.
+         // Init temporary sum.
+         int tmpSum = 0;
+         // Iteration to generate each term of the sum.
+         for( int exp = 0; exp <= n; exp++ ) {
+            // Init current term of the sum.
+            int currTerm = 1;
+            // Iteration to perform the multiplications to compute current term of the sum (2^exp).
+            for( int mult = 1; mult <= exp; mult++ ) {
+               // Multiply current term by the base.
+               currTerm = currTerm * 2;
+            }
+            // Update temp sum adding current term.
+            tmpSum = tmpSum + currTerm;
+         }
+         // Return the sum.
+         return tmpSum;
+      }
+   }
+   
+   // Desc.: Computes the sum of powers of 2, considering the first n+1 powers of 2, from 2^0 to 2^n.
+   // Input: "n" (assuming n >= 0) as the value of the last exponent used in the sum, or as the exponent of the last term in the sum.
+   // Node: If input value is negative (n < 0), this function returns a special value (-1).
+   // Note: See https://en.wikipedia.org/wiki/1_%2B_2_%2B_4_%2B_8_%2B_%E2%8B%AF
+   // Note: Recursive implementation (version 1).
+   public static int sumPowersOfTwoRec1( int n ) {
+      // Check if input value is valid (n >= 0 ).
+      if( n < 0 ) {
+         // Input value is invalid, return special value -1.
+         return -1;
+      }
+      // Input value is valid, check if the sum is trivial (only 1 term).
+      else if( n == 0 ) { 
+         // Sum includes only 1 term, result is 2^0.
+         return 1;
+      }
+      else {
+         // Here the sum includes at least 2 terms.
+         // 1. Compute last term, 2^n.
+         int lastTerm = 1; // Init current term of the sum.
+         // Iteration to perform the multiplications to compute last term of the sum (2^n).
+         for( int mult = 1; mult <= n; mult++ ) {
+            // Multiply last term by 2.
+            lastTerm = lastTerm * 2;
+         }
+         // 2. Compute rest of sum recursively.
+         int restOfSum = sumPowersOfTwoRec1( n-1 );
+         // 3. Add last term to rest of sum, and return final result.
+         return restOfSum + lastTerm;
+      }
+   }
+
 }
 
 
