@@ -4,7 +4,7 @@
 // CS-102: "Computing and Algorithms II"
 // Prof. Giuseppe Turini
 // Kettering University
-// 2020-10-21
+// 2020-10-29
 
 package List;
 
@@ -17,6 +17,7 @@ public class ListReferenceBased implements ListInterface {
    // Desc.: Locates a specified node in a linked list.
    // Input: A valid input index (array-like).
    // Output: A reference to the list node at the input index.
+   // Note: Iterative implementation.
    private Node find( int index ) {
       // Init traversal variable with head reference.
       Node curr = this.head;
@@ -28,7 +29,7 @@ public class ListReferenceBased implements ListInterface {
       return curr;
    }
 
-   // Default Constructor.
+   // Desc.: Default constructor.
    public ListReferenceBased() { 
       // Init internal fields.
       this.head = null; 
@@ -45,17 +46,44 @@ public class ListReferenceBased implements ListInterface {
       return this.numItems;
    }
    
+   // Desc.: Recalculate the size of this list, updates internal field, and returns the size of this list.
+   // Output: The number of items in this list.
+   // Note: Recursive implementation.
+   public int recalculateSize() {
+      int currSize = recalculateSizeRec( this.head ); // Compute this list size recursively.
+      this.numItems = currSize; // Update internal field.
+      return this.numItems; // Return the size of this list.
+   }
+   
+   // Desc.: Internal recursive implementation for the "recalculateSize" method.
+   // Input: An input list, represented by the reference to its 1st node.
+   // Output: Number of items in input list.
+   // Note: Recursive implementation.
+   private int recalculateSizeRec( Node currHead ) {
+      // Check if input list is empty.
+      if( currHead == null ) {
+         // Here input list is empty, return 0.
+         return 0;
+      }
+      else {
+         // Here input list is not empty: compute size of rest of list, add 1, return result.
+         int sizeRestOfList = recalculateSizeRec( currHead.next ); // Recursive call.
+         return 1 + sizeRestOfList; // Return size of input list.
+      }
+   }
+   
    // Desc.: Delete all the items in this list.
    public void removeAll() {
-      this.head = null; // Set head to null (so 1st node is now unreferenced and marked for garbage collection, with the rest of the list).
+      this.head = null; // Set head to null (1st node is now unreferenced, marked for garbage collection, with rest of list).
       this.numItems = 0; // Update number of list items.
    }
    
-   // Desc.: Inserts the input item at the input position in this list.
+   // Desc.: Inserts the input item at the input index in this list.
    // Input: An input index (array-like).
    //        An input item.
    // Output: Throws a ListException (non-critical) if this insertion fails because this list is full.
    //         Throws a ListIndexOutOfBoundsException (non-critical) if this insertion fails because input index is invalid.
+   // Note: Iterative implementation.
    public void add( int index, Object item ) throws ListIndexOutOfBoundsException {
       // Check if input index is valid.
       if( ( index >= 0 ) && ( index < ( this.numItems + 1 ) ) ) {
@@ -80,9 +108,54 @@ public class ListReferenceBased implements ListInterface {
       }
    }
    
+   // Desc.: Inserts the input item at the input index in this list.
+   // Input: index, input index (array-like) to perform insertion at.
+   //        item, input item to be inserted in this list.
+   // Output: Throws a ListException (non-critical) if this insertion fails because this list is full.
+   //         Throws a ListIndexOutOfBoundsException (non-critical) if this insertion fails because input index is invalid.
+   // Note: Recursive implementation.
+   public void insert( int index, Object item ) throws ListIndexOutOfBoundsException {
+      // Check if input index is valid.
+      if( ( index >= 0 ) && ( index < ( this.numItems + 1 ) ) ) {
+         // Here input index is valid, perform insertion recursively.
+         this.head = insertRec( this.head, index, item ); // Recursive call.
+         // Update number of list items.
+         this.numItems++;
+      }
+      else {
+         // Input index is invalid, insertion is impossible, raise the proper runtime error.
+         throw new ListIndexOutOfBoundsException("Add operation failed, input index out of range!");
+      }
+   }
+   
+   // Desc.: Recursive implementation for the "insert" method.
+   // Input: currHead, reference to 1st node of input list.
+   //        index, input index (array-like) to perform insertion at.
+   //        item, input item to be inserted in input list.
+   // Output: Reference to 1st node of input list (could be same as currHead or not).
+   // Note: Recursive implementation.
+   // Note: Input idex is valid (already checked elsewhere).
+   private Node insertRec( Node currHead, int index, Object item ) {
+      // Check if insertion is at front.
+      if( index == 0 ) {
+         // Insertion at front: create new node to store input item, connect it to input list, and return it.
+         Node newNode = new Node( item );
+         newNode.next = currHead;
+         return newNode;
+         // Warning: (if needed) connecting previous list to newNode is done by caller code.
+      }
+      else {
+         // Insertion not at front: insert in rest of list (recursively), reconnect with rest of list, return currHead.
+         Node newHeadRestOfList = insertRec( currHead.next, index-1, item );
+         currHead.next = newHeadRestOfList;
+         return currHead;
+      }
+   }
+   
    // Desc.: Returns the list item at input index.
    // Input: An input index (array-like).
    // Output: Throws a ListIndexOutOfBoundsException (non-critical) if this retrieval fails because input index is invalid.
+   // Note: Iterative implementation.
    public Object get( int index ) throws ListIndexOutOfBoundsException {
       // Check if input index is valid.
       if( ( index >= 0 ) && ( index < this.numItems ) ) {
@@ -99,6 +172,7 @@ public class ListReferenceBased implements ListInterface {
    // Desc.: Deletes the list item at the input position from this list.
    // Input: An input index (array-like).
    // Output: Throws a ListIndexOutOfBoundsException (non-critical) if this removal fails because input index is invalid.
+   // Note: Iterative implementation.
    public void remove( int index ) throws ListIndexOutOfBoundsException {
       // Check if input index is valid.
       if( ( index >= 0 ) && ( index < this.numItems ) ) {
@@ -124,6 +198,7 @@ public class ListReferenceBased implements ListInterface {
    
    // Desc.: Removes duplicates items (items with same reference) from the list, but keeping the 1st item occurrence in the list.
    // Note: In-place implementation.
+   // Note: Iterative implementation.
    public void removeDuplicates() {
       // Check if the list is long enough to have duplicate items.
       if( this.numItems > 1 ) {
@@ -162,6 +237,37 @@ public class ListReferenceBased implements ListInterface {
       else {
          // List is not long enough to have duplicate items, do nothing and return.
          return;
+      }
+   }
+   
+   // Desc.: Prints all the list items from 1st to last.
+   // Output: All list items, separated by a newline, printing a special message if this list is empty.
+   // Note: Recursive implementation.
+   public void print() {
+      // Check if this list is empty.
+      if( this.numItems == 0 ) {
+         // Here this list is empty, print special message.
+         System.out.println( "List is empty, nothing to print." );
+      }
+      else {
+         // Here this list is not empty, print list recursively.
+         printRec( this.head ); // Recursive call to print (recursively) this list.
+      }
+   }
+
+   // Desc.: Recursive implementation for the "print" method.
+   // Input: Reference to the 1st node of the input list.
+   // NOte: Recursive implementation.
+   private void printRec( Node currHead ) {
+      // Check if input list (represented by "currHead") is empty.
+      if( currHead == null ) {
+         // Here input list is empty, nothing to print.
+         return;
+      }
+      else {
+         // Here input list is not empty: print item at 1st node, and print rest of list recursively.
+         System.out.println( currHead.item );
+         printRec( currHead.next ); // Recursive call, pass rest of list (represented by "currHead.next").
       }
    }
 
