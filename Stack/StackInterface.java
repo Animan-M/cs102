@@ -23,7 +23,7 @@ public interface StackInterface {
    // Output: Throws a StackRuntimeException (non-critical) if this insertion fails.
    public void push( Object newItem ) throws StackRuntimeException;
    
-   // Desc.: Removes the top item of this stack, and returns it. Throws StackException if the stack is empty.Inserts the input item at the input position in this list.
+   // Desc.: Removes the top item of this stack, and returns it.
    // Output: The item just removed from the top of this stack.
    //         Throws a StackRuntimeException (non-critical) if this removal fails (e.g. this stack is empty).
    public Object pop() throws StackRuntimeException;
