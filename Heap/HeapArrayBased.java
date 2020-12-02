@@ -4,7 +4,7 @@
 // CS-102: "Computing and Algorithms II"
 // Prof. Giuseppe Turini
 // Kettering University
-// 2020-11-30
+// 2020-12-02
 
 package Heap;
 
@@ -60,10 +60,10 @@ public class HeapArrayBased {
       }   
    }
    
-   // Desc.: Returns and deletes topmost/root/max item/key in this heap (maxheap).
+   // Desc.: Extracts (returns and deletes) topmost/root/max item/key in this heap (maxheap).
    // Output: Topmost/root/max item/key in this heap (maxheap).
-   // Output: Throws an HeapException (critical) if delete fails because heap is empty.
-   public char delete() throws HeapException {
+   // Output: Throws an HeapException (critical) if extraction fails because heap is empty.
+   public char extractMax() throws HeapException {
       // Check if this heap is empty.
       if( this.currNumItems == 0 ) {
          // This heap is empty, delete failed, throw critical exception.
@@ -88,15 +88,49 @@ public class HeapArrayBased {
    // Desc.: Internal recursive implementation to swap down an item of this heap.
    // Note: Assuming input index is valid.
    private void swapDownRec( int indexItem ) {
+      // Compute indices of children of input item.
       int indexChildLeft = ( 2 * indexItem ) + 1; // Index of left child of input item, if any.
       int indexChildRight = indexChildLeft + 1; // Index of right child of input item, if any.
       // Check if left child exists.
-      if( indexChildLeft <= this.currNumItems ) {
+      if( indexChildLeft < this.currNumItems ) {
          // Left child exists, check if right child exists.
-         if( indexChildRight <= this.currNumItems ) {
+         if( indexChildRight < this.currNumItems ) {
             // Both left and right children exist, find greatest child.
             if( this.items[ indexChildLeft ] > this.items[ indexChildRight ] ) {
                // Greatest child is left child.
+               // Check if input value is less than greatest child (left).
+               if( this.items[ indexItem ] < this.items[ indexChildLeft ] ) {
+                  // 1. Swap input item with greatest child (left).
+                  char temp = this.items[ indexChildLeft ];
+                  this.items[ indexChildLeft ] = this.items[ indexItem ];
+                  this.items[ indexItem ] = temp;
+                  // 2. Proceed with the swapping down (recursively).
+                  swapDownRec( indexChildLeft );
+               }
+               else {
+                  // Input item is greater than both children, do nothing.
+               }
+            }
+            else {
+               // Greatest child is right child.
+               // Check if input value is less than greatest child (right).
+               if( this.items[ indexItem ] < this.items[ indexChildRight ] ) {
+                  // 1. Swap input item with greatest child (right).
+                  char temp = this.items[ indexChildRight ];
+                  this.items[ indexChildRight ] = this.items[ indexItem ];
+                  this.items[ indexItem ] = temp;
+                  // 2. Proceed with the swapping down (recursively).
+                  swapDownRec( indexChildRight );
+               }
+               else {
+                  // Input item is greater than both children, do nothing.
+               }
+            }
+         }
+         else {
+            // Left child exist, but right child does not exist, greatest child is left child.
+            // Check if input value is less than greatest child (left).
+            if( this.items[ indexItem ] < this.items[ indexChildLeft ] ) {
                // 1. Swap input item with greatest child (left).
                char temp = this.items[ indexChildLeft ];
                this.items[ indexChildLeft ] = this.items[ indexItem ];
@@ -105,23 +139,8 @@ public class HeapArrayBased {
                swapDownRec( indexChildLeft );
             }
             else {
-               // Greatest child is right child.
-               // 1. Swap input item with greatest child (right).
-               char temp = this.items[ indexChildRight ];
-               this.items[ indexChildRight ] = this.items[ indexItem ];
-               this.items[ indexItem ] = temp;
-               // 2. Proceed with the swapping down (recursively).
-               swapDownRec( indexChildRight );
+               // Input item is greater than the only child (left), do nothing.
             }
-         }
-         else {
-            // Left child exist, but right child does not exist, greatest child is left child.
-            // 1. Swap input item with greatest child (left).
-            char temp = this.items[ indexChildLeft ];
-            this.items[ indexChildLeft ] = this.items[ indexItem ];
-            this.items[ indexItem ] = temp;
-            // 2. Proceed with the swapping down (recursively).
-            swapDownRec( indexChildLeft );
          }
       }
       else {
